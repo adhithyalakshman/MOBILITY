@@ -1,366 +1,233 @@
-# MoveIQ — Mobility Intelligence Platform
-
-<div align="center">
-
-[![React](https://img.shields.io/badge/React-18.2-61dafb?style=flat-square&logo=react)](https://reactjs.org/)
-[![Vite](https://img.shields.io/badge/Vite-5.x-646cff?style=flat-square&logo=vite)](https://vitejs.dev/)
-[![FastAPI](https://img.shields.io/badge/Backend-FastAPI-009688?style=flat-square&logo=fastapi)](https://fastapi.tiangolo.com/)
-[![Leaflet](https://img.shields.io/badge/Maps-Leaflet-199900?style=flat-square&logo=leaflet)](https://leafletjs.com/)
-[![License](https://img.shields.io/badge/License-MIT-green?style=flat-square)](LICENSE)
-
-**An AI-powered mobility intelligence platform for Delhi NCR.**
-Predicts traffic demand, suggests optimal driver positioning, and matches riders with the best available drivers — in real time.
-
-[Features](#-features) · [Tech Stack](#-tech-stack) · [Getting Started](#-getting-started) · [Architecture](#-architecture) · [API Reference](#-api-reference)
-
-</div>
+# Step-by-Step GitHub Push Guide — MoveIQ
 
 ---
 
-## 📌 Overview
-
-MoveIQ is a full-stack mobility application built on a **FastAPI ML backend** and a **React frontend**. The platform serves two user types:
-
-- **Drivers** — receive AI-generated hotspot suggestions telling them *where to position themselves* to maximise ride demand
-- **Riders** — submit ride requests and get matched with the optimal available driver based on real-time traffic, weather, and road conditions
-
-The ML model ingests inputs like rider location, destination, weather conditions, traffic density, and road type — and returns intelligent predictions and driver recommendations.
-
----
-
-## ✨ Features
-
-### 🚗 Driver Interface
-- Secure login with JWT authentication
-- **Auto role detection** — no manual role selection after login
-- Set current location from 25 fixed Delhi NCR zones
-- Real-time online/offline status via heartbeat (every 4 minutes)
-- **AI Hotspot Finder** — enter destination + road conditions → ML model returns the best area to start from
-- Live map showing current position and AI-suggested hotspot
-
-### 👤 Rider Interface
-- Request a ride by selecting pickup area, destination, weather, traffic, road type, time of day, and day of week
-- **ML-powered driver matching** via `/rider/get-captain`
-- Dynamic result card showing raw model output — no hardcoded messages
-- Live Delhi map showing available drivers nearby
-
-### 🛡️ Admin Panel
-- Live driver distribution map across all 25 Delhi NCR zones
-- Area-wise driver density with visual progress bars
-- Full coverage monitoring
-- Auto-refreshes every 30 seconds
-
-### 🔐 Authentication
-- Email OTP-based registration (3-step flow)
-- JWT login with persistent sessions in `localStorage`
-- OTP-based forgot password / reset flow
-- **Automatic role detection** from backend after login — system reads the user's role from the database via API probing, no manual selection needed
-
----
-
-## 🛠 Tech Stack
-
-| Layer | Technology |
-|---|---|
-| **Framework** | React 18 + Vite 5 |
-| **Routing** | React Router v6 |
-| **HTTP Client** | Axios (JWT interceptor + 401 auto-redirect) |
-| **Maps** | Leaflet + React-Leaflet |
-| **Notifications** | React Hot Toast |
-| **Icons** | Lucide React |
-| **Fonts** | Inter (Google Fonts) |
-| **State Management** | React Context API |
-| **Backend** | FastAPI (Python) |
-| **Auth** | OAuth2 Password Flow / JWT Bearer |
-
----
-
-## 🚀 Getting Started
-
-### Prerequisites
-
-- **Node.js** v18 or higher
-- **npm** v9 or higher
-- FastAPI backend running locally or deployed
-
-### Installation
+## STEP 1 — Install Git (if not already installed)
 
 ```bash
-# 1. Clone the repository
-git clone https://github.com/your-username/moveiq-frontend.git
-cd moveiq-frontend
+# Check if git is installed
+git --version
 
-# 2. Install dependencies
-npm install
-
-# 3. Configure environment
-# Edit the .env file and set your backend URL:
-VITE_API_BASE_URL=http://localhost:8000
-
-# 4. Start the development server
-npm run dev
-```
-
-Open [http://localhost:5173](http://localhost:5173) in your browser.
-
-### Build for Production
-
-```bash
-npm run build      # Compiles to /dist
-npm run preview    # Preview the production build locally
+# If not installed:
+# Windows  → https://git-scm.com/download/windows
+# Mac      → brew install git
+# Ubuntu   → sudo apt install git
 ```
 
 ---
 
-## 🗂 Architecture
+## STEP 2 — Create the Repository on GitHub
 
-### Project Structure
-
-```
-mobility-app/
-├── src/
-│   ├── api/                            # API service layer
-│   │   ├── client.js                   # Axios instance + JWT interceptor + 401 handler
-│   │   ├── auth.js                     # register, OTP, login, forgot-password
-│   │   ├── driver.js                   # driver home, suggest-area
-│   │   ├── rider.js                    # rider home, get-captain
-│   │   └── status.js                   # heartbeat, set-location, online-drivers
-│   │
-│   ├── context/
-│   │   └── AuthContext.jsx             # Global auth state, auto role detection, heartbeat
-│   │
-│   ├── components/
-│   │   └── common/
-│   │       ├── AppLayout.jsx           # Sidebar wrapper + Toast provider
-│   │       ├── Sidebar.jsx             # Responsive navigation sidebar
-│   │       ├── DelhiMap.jsx            # Leaflet map with zone markers
-│   │       └── ProtectedRoute.jsx      # Role-aware route guard
-│   │
-│   ├── pages/
-│   │   ├── auth/
-│   │   │   ├── LoginPage.jsx           # Email + password sign-in
-│   │   │   ├── RegisterPage.jsx        # 3-step OTP registration
-│   │   │   └── ForgotPasswordPage.jsx  # OTP-based password reset
-│   │   ├── driver/
-│   │   │   ├── DriverDashboard.jsx     # Stats + live driver map
-│   │   │   ├── DriverLocationPage.jsx  # Set area → POST /status/driver/set-location
-│   │   │   └── DriverSuggestPage.jsx   # AI hotspot → POST /driver/suggest-area
-│   │   ├── rider/
-│   │   │   ├── RiderDashboard.jsx      # Overview + live driver map
-│   │   │   └── RiderRequestPage.jsx    # Request ride → POST /rider/get-captain
-│   │   └── admin/
-│   │       └── AdminDashboard.jsx      # Driver distribution monitor
-│   │
-│   ├── utils/
-│   │   └── constants.js                # Area list, enum values, map coordinates
-│   │
-│   ├── styles/
-│   │   └── global.css                  # Design system (CSS variables, components)
-│   │
-│   ├── App.jsx                         # Router + all route definitions
-│   └── main.jsx                        # React entry point
-│
-├── .env                                # Environment variables (git-ignored)
-├── index.html
-├── package.json
-└── vite.config.js
-```
+1. Go to [https://github.com/new](https://github.com/new)
+2. Fill in:
+   - **Repository name:** `moveiq` (or any name you prefer)
+   - **Description:** `AI-powered mobility intelligence platform for Delhi NCR`
+   - **Visibility:** Public or Private — your choice
+   - ❌ Do NOT check "Add a README file" (you already have one)
+   - ❌ Do NOT check "Add .gitignore" (you already have one)
+3. Click **Create repository**
+4. Copy the repo URL shown — it will look like:
+   `https://github.com/adhithyalakshman/MOBILITY.git`
 
 ---
 
-### Key Architecture Decisions
+## STEP 3 — Set Up .gitignore Files BEFORE Touching Git
 
-#### 1. Automatic Role Detection
+This is the most important step. Do this BEFORE running `git init`.
 
-The `/auth/login` endpoint returns only a JWT token — it does not include the user's role. After login, `AuthContext` automatically probes `GET /driver/` then `GET /rider/` in sequence. Whichever returns HTTP `200` determines the role. The user sees a brief loading spinner and is routed directly to the correct dashboard — no manual role selection screen.
+### 3a. Root .gitignore
 
-```
-Login
-  └── Save JWT token
-        └── Probe GET /driver/
-              ├── 200 OK  →  role = "driver"  →  /driver/dashboard
-              └── Error
-                    └── Probe GET /rider/
-                          ├── 200 OK  →  role = "rider"  →  /rider/dashboard
-                          └── Error   →  redirect to /login
-```
-
-#### 2. Heartbeat — Session Keep-Alive
-
-`POST /status/heartbeat` is called immediately on login, then every **4 minutes** using `setInterval` inside `AuthContext`. The interval is automatically cleared on logout. This keeps the user marked as online in the backend database without any interaction.
-
-```js
-// AuthContext.jsx
-const ping = () => heartbeat().catch(() => {});
-ping();                                         // immediate on login
-const interval = setInterval(ping, 4 * 60 * 1000); // every 4 min
-return () => clearInterval(interval);           // cleanup on logout
-```
-
-#### 3. Driver Location Flow
-
-After login, drivers must set their current area via the **My Location** page. This calls `POST /status/driver/set-location` with one of 25 fixed Delhi zone names (matching the backend enum exactly). The selected area is cached in `localStorage` for persistence across page refreshes and shown immediately on the map.
+Place the `root-gitignore.txt` file at the **root of your entire project folder** and rename it to `.gitignore`:
 
 ```
-Driver logs in → DriverDashboard shows "not set" warning
-  → Driver visits My Location page
-    → Selects area from 25-zone grid
-      → POST /status/driver/set-location { area: "Connaught Place" }
-        → Driver is now Online and visible on map
+moveiq/              ← your root folder
+├── .gitignore       ← paste root-gitignore.txt content here
+├── backend/
+│   ├── .env         ← secret — protected by .gitignore
+│   └── .env.example ← safe to commit
+└── frontend/
+    ├── .env         ← secret — protected by .gitignore
+    └── .env.example ← safe to commit
 ```
 
-#### 4. Model Output — No Hardcoded UI Messages
+### 3b. Create .env.example files
 
-All result cards and toast notifications display the **raw model response** from the backend. The UI does not assume success or failure:
-
-- The first value from the response object is used as the headline
-- Negative outcomes are detected by scanning for keywords (`"no driver"`, `"not available"`, `"no captain"`) in the JSON
-- The card colour, badge, and notification all change accordingly
-
-This means the UI always reflects exactly what the ML model returned.
-
-#### 5. Protected Routes
-
-`ProtectedRoute` checks both `isAuthenticated` and `allowedRole`. A rider visiting `/driver/dashboard` is redirected to `/rider/dashboard`. Unauthenticated users are always sent to `/login`.
-
----
-
-## 🗺 Covered Zones — Delhi NCR (25 Areas)
-
-| | | |
-|---|---|---|
-| Connaught Place | Karol Bagh | Chandni Chowk |
-| Preet Vihar | Greater Kailash | Vasant Kunj |
-| IGI Airport | Saket | Punjabi Bagh |
-| Nehru Place | Dwarka | Kalkaji |
-| AIIMS | Rohini | Okhla |
-| Civil Lines | Model Town | Janakpuri |
-| Noida Sector 18 | Mayur Vihar | Hauz Khas |
-| Pitampura | Shahdara | Rajouri Garden |
-| Lajpat Nagar | | |
-
----
-
-## 📡 API Reference
-
-All endpoints connect to the FastAPI backend. The base URL is configured via `VITE_API_BASE_URL` in `.env`.
-
-### Authentication
-
-| Method | Endpoint | Payload | Notes |
-|---|---|---|---|
-| `POST` | `/auth/register/request-otp` | `{ email }` | Sends OTP to email |
-| `POST` | `/auth/register/verify-otp` | `{ email, otp }` | Verifies 6-digit OTP |
-| `POST` | `/auth/register` | `{ name, email, phone_number, set_password, confirm_password, role }` | Creates account, returns JWT |
-| `POST` | `/auth/login` | `username, password` *(form-urlencoded)* | Returns JWT token |
-| `POST` | `/auth/forgot-password/request-otp` | `{ email }` | Sends reset OTP |
-| `POST` | `/auth/forgot-password/reset` | `{ email, otp, new_password, confirm_password }` | Resets password |
-
-### Driver
-
-| Method | Endpoint | Payload | Notes |
-|---|---|---|---|
-| `GET` | `/driver/` | — | Driver home; used for role detection |
-| `POST` | `/driver/suggest-area` | `{ end_area, weather_condition, traffic_density_level, road_type, average_speed_kmph, distance_km }` | Returns `{ suggested_start_area }` |
-
-### Rider
-
-| Method | Endpoint | Payload | Notes |
-|---|---|---|---|
-| `GET` | `/rider/` | — | Rider home; used for role detection |
-| `POST` | `/rider/get-captain` | `{ rider_area, end_area, weather_condition, traffic_density_level, road_type, distance_km, time_of_day, day_of_week }` | Returns driver match result |
-
-### Status
-
-| Method | Endpoint | Payload | Notes |
-|---|---|---|---|
-| `POST` | `/status/heartbeat` | — | Keep-alive ping (every 4 min) |
-| `POST` | `/status/driver/set-location` | `{ area }` | Update driver's current zone |
-| `GET` | `/status/online-drivers` | — | List all online drivers |
-| `GET` | `/status/online/{email}` | — | Check if a specific user is online |
-
-### Enum Values (Backend-Defined)
-
-```
-WeatherCondition : Clear | Rain | Fog | Heatwave
-TrafficDensity   : Low | Medium | High | Very High
-RoadType         : Main Road | Inner Road | Highway
-TimeOfDay        : Night | Morning Peak | Afternoon | Evening Peak
-Role             : rider | driver
-```
-
----
-
-## 🔧 Environment Variables
-
+**frontend/.env.example** — commit this, not .env:
 ```env
-# .env
+# Copy this file to .env and fill in your values
 VITE_API_BASE_URL=http://localhost:8000
 ```
 
-| Variable | Description | Default |
-|---|---|---|
-| `VITE_API_BASE_URL` | Base URL of the FastAPI backend | `http://localhost:8000` |
+**backend/.env.example** — commit this, not .env:
+```env
+# Copy this file to .env and fill in your values
+DATABASE_URL=
+SECRET_KEY=
+EMAIL_HOST=
+EMAIL_PORT=587
+EMAIL_USER=
+EMAIL_PASSWORD=
+```
 
 ---
 
-## 📱 Responsive Design
+## STEP 4 — Open Terminal in Your Project Root
 
-| Breakpoint | Layout |
-|---|---|
-| **Desktop** (> 768px) | Fixed 248px sidebar + scrollable main content |
-| **Tablet / Mobile** (≤ 768px) | Collapsed sidebar with hamburger toggle + backdrop overlay |
-| **Forms** | 2-column grid collapses to single column on small screens |
-
----
-
-## 🔒 Security
-
-- JWT tokens stored in `localStorage`, attached to every request via Axios interceptor
-- Global `401` response interceptor clears token and redirects to `/login` automatically
-- All protected routes guarded client-side by `ProtectedRoute`
-- OTP verification required before account creation and password reset
+```bash
+# Navigate to your root project folder
+# Example:
+cd /path/to/moveiq
+```
 
 ---
 
-## 🗺 Map Implementation
+## STEP 5 — Initialise Git
 
-- Uses **Leaflet** with **CartoDB dark tiles** — no API key required
-- All 25 Delhi zone coordinates are hardcoded in `src/utils/constants.js`
-- Marker colour coding:
-  - 🔵 **Blue** — Current location / pickup point
-  - 🟠 **Orange** — Online drivers
-  - 🟢 **Green** — AI suggested hotspot
-  - 🟣 **Purple** — Destination
+```bash
+git init
+```
 
 ---
 
-## 🤝 Contributing
+## STEP 6 — Verify .env Files Are Ignored (CRITICAL CHECK)
 
-1. Fork the repository
-2. Create your feature branch: `git checkout -b feature/your-feature`
-3. Commit your changes: `git commit -m 'Add: your feature description'`
-4. Push to the branch: `git push origin feature/your-feature`
-5. Open a Pull Request
+Run this BEFORE adding any files:
 
----
+```bash
+git status
+```
 
-## 📄 License
+**You should NOT see any `.env` files in the output.**
 
-This project is licensed under the **MIT License**. See the [LICENSE](LICENSE) file for details.
+If you see `.env` listed, your `.gitignore` is not set up correctly — stop and fix Step 3 before continuing.
 
----
+You can also double-check with:
 
-## 🙏 Acknowledgements
+```bash
+git check-ignore -v backend/.env
+git check-ignore -v frontend/.env
+```
 
-- [FastAPI](https://fastapi.tiangolo.com/) — Python backend framework
-- [React Leaflet](https://react-leaflet.js.org/) — interactive map integration
-- [CartoDB](https://carto.com/) — map tile provider (no API key needed)
-- [Lucide Icons](https://lucide.dev/) — clean SVG icon library
-- [Vite](https://vitejs.dev/) — lightning-fast build tooling
+Both should print a line confirming they are ignored. If they print nothing, they are NOT ignored — fix your `.gitignore` first.
 
 ---
 
-<div align="center">
-  <sub>Built for Delhi NCR mobility intelligence · MoveIQ © 2025</sub>
-</div>
+## STEP 7 — Stage All Safe Files
+
+```bash
+git add .
+```
+
+---
+
+## STEP 8 — Verify One More Time (Important)
+
+```bash
+git status
+```
+
+Scroll through the output. Confirm:
+- ✅ `README.md` is listed
+- ✅ `frontend/src/` files are listed
+- ✅ `backend/` source files are listed
+- ✅ `.env.example` files are listed
+- ❌ `.env` files are NOT listed
+- ❌ `node_modules/` is NOT listed
+- ❌ `venv/` or `__pycache__/` is NOT listed
+
+---
+
+## STEP 9 — Make Your First Commit
+
+```bash
+git commit -m "Initial commit: MoveIQ mobility intelligence platform"
+```
+
+---
+
+## STEP 10 — Connect to GitHub
+
+```bash
+# Replace YOUR-USERNAME and your repo name
+git remote add origin https://github.com/YOUR-USERNAME/moveiq.git
+```
+
+Confirm it was added:
+```bash
+git remote -v
+```
+
+---
+
+## STEP 11 — Set Branch Name and Push
+
+```bash
+git branch -M main
+git push -u origin main
+```
+
+You will be asked for your GitHub username and password.
+> ⚠️ GitHub no longer accepts your account password here.
+> You need a **Personal Access Token** instead — see below.
+
+---
+
+## STEP 12 — GitHub Personal Access Token (Required for HTTPS push)
+
+1. Go to GitHub → **Settings** → **Developer settings** → **Personal access tokens** → **Tokens (classic)**
+2. Click **Generate new token (classic)**
+3. Give it a name, set expiry, and tick **repo** scope
+4. Click **Generate token**
+5. Copy the token immediately (you won't see it again)
+6. When Git asks for your password during `git push` — paste this token
+
+---
+
+## STEP 13 — Verify on GitHub
+
+1. Go to `https://github.com/YOUR-USERNAME/moveiq`
+2. Confirm you can see all your files
+3. Click into `frontend/.env` or `backend/.env` — these files should NOT exist in the repo
+4. You should see `.env.example` files instead
+
+---
+
+## Future Pushes (After Initial Setup)
+
+Whenever you make changes:
+
+```bash
+git add .
+git commit -m "Fix: brief description of what you changed"
+git push
+```
+
+---
+
+## Quick Recovery — If You Accidentally Committed .env
+
+If you already committed `.env` before setting up `.gitignore`, run:
+
+```bash
+# Remove .env from git tracking (keeps the local file)
+git rm --cached backend/.env
+git rm --cached frontend/.env
+
+# Now add .gitignore and recommit
+git add .gitignore
+git commit -m "Fix: remove .env from tracking, add .gitignore"
+git push
+```
+
+---
+
+## Summary Checklist
+
+- [ ] `.gitignore` at repo root covers both `frontend/.env` and `backend/.env`
+- [ ] `frontend/.env.example` created and committed
+- [ ] `backend/.env.example` created and committed  
+- [ ] `git status` shows NO `.env` files before committing
+- [ ] `git check-ignore -v frontend/.env` confirms it is ignored
+- [ ] GitHub repo created at github.com/new
+- [ ] `git remote add origin ...` points to your repo
+- [ ] First push successful with Personal Access Token
