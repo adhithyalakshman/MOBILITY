@@ -8,7 +8,7 @@
 [![XGBoost](https://img.shields.io/badge/Model-XGBoost-orange?style=flat-square)](https://xgboost.readthedocs.io/)
 [![Accuracy](https://img.shields.io/badge/Model%20Accuracy-95.5%25-brightgreen?style=flat-square)]()
 [![Leaflet](https://img.shields.io/badge/Maps-Leaflet-199900?style=flat-square&logo=leaflet)](https://leafletjs.com/)
-[![License](https://img.shields.io/badge/License-MIT-green?style=flat-square)](LICENSE)
+
 
 **An AI-powered mobility intelligence platform for Delhi NCR.**  
 Predicts traffic demand, suggests optimal driver positioning, and matches riders with the best available drivers — in real time.
@@ -81,11 +81,7 @@ The XGBoost Classifier was chosen for its strong performance on tabular data wit
 - Toast notification mirrors the exact model response text
 - Live Delhi map with available driver markers
 
-### 🛡️ Admin Panel
-- Live driver distribution map across all 25 Delhi NCR zones
-- Area-wise driver density with animated progress bars
-- Full coverage monitoring panel showing empty vs active zones
-- Auto-refreshes every 30 seconds without page reload
+
 
 ### 🔐 Authentication
 - Email OTP-based registration (3-step flow: request OTP → verify → fill details)
