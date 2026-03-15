@@ -131,13 +131,12 @@ The XGBoost Classifier was chosen for its strong performance on tabular data wit
 
 ```bash
 git clone https://github.com/adhithyalakshman/MOBILITY.git
-cd moveiq
+cd MOBILITY
 ```
 
 ### 2. Backend Setup
 
 ```bash
-cd backend
 
 # Create virtual environment
 python -m venv venv
@@ -157,7 +156,7 @@ uvicorn main:app --reload --port 8000
 ### 3. Frontend Setup
 
 ```bash
-cd frontend     # or cd mobility-app
+ #  cd mobility-app
 
 # Install dependencies
 npm install
