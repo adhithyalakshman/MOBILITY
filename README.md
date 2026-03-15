@@ -116,7 +116,8 @@ The XGBoost Classifier was chosen for its strong performance on tabular data wit
 | ML Model | XGBoost Classifier |
 | Authentication | OAuth2 Password Flow / JWT Bearer Tokens |
 | Model Serving | joblib artifact loaded at startup |
-
+| SMTB BASED OTP VERIFICATION  |
+| REDIS OFF LOADS |
 ---
 
 ## 🚀 Getting Started
@@ -343,7 +344,7 @@ SECRET_KEY=your_jwt_secret_key
 EMAIL_HOST=your_smtp_host
 EMAIL_PORT=587
 EMAIL_USER=your_email
-EMAIL_PASSWORD=your_email_password
+EMAIL_PASSWORD=your_email_password  
 ```
 
 
