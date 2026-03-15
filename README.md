@@ -112,8 +112,8 @@ The XGBoost Classifier was chosen for its strong performance on tabular data wit
 | ML Model | XGBoost Classifier |
 | Authentication | OAuth2 Password Flow / JWT Bearer Tokens |
 | Model Serving | joblib artifact loaded at startup |
-| SMTB BASED OTP VERIFICATION  |
-| REDIS OFF LOADS |
+| SMTB BASED OTP VERIFICATION  |  SMTBLIB  |
+| REDIS OFF LOADS |  REDIS |
 ---
 
 ## 🚀 Getting Started
