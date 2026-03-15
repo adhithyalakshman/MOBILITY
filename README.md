@@ -56,7 +56,7 @@ This dataset covers real-world traffic conditions across major zones in Delhi NC
 |---|---|
 | **Algorithm** | XGBoost Classifier (`XGBClassifier`) |
 | **Test Accuracy** | **95.5%** |
-| **Task** | Multi-class classification — predict optimal driver area / demand zone |
+| **Task** | Multi-class classification — predict optimal driver area / demand zone  (two seperate models one classifier and one predictor)|
 | **Features Used** | Area, weather, traffic density, road type, time of day, day of week, distance, speed |
 | **Serving** | Embedded in FastAPI via joblib-loaded model artifact |
 
