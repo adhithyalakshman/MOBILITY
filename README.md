@@ -130,7 +130,7 @@ The XGBoost Classifier was chosen for its strong performance on tabular data wit
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/your-username/moveiq.git
+git clone https://github.com/adhithyalakshman/MOBILITY.git
 cd moveiq
 ```
 
@@ -183,51 +183,7 @@ npm run preview    # Preview production build locally
 
 ## 🗂 Architecture
 
-### Repository Structure
 
-```
-moveiq/                              ← root of your GitHub repo
-│
-├── backend/                         ← FastAPI ML backend
-│   ├── main.py
-│   ├── routes/
-│   ├── models/
-│   ├── ml/
-│   │   └── xgb_model.pkl            ← trained XGBoost artifact
-│   ├── requirements.txt
-│   ├── .env.example                 ← ✅ commit this
-│   └── .env                         ← ❌ NEVER commit — in .gitignore
-│
-└── frontend/                        ← React Vite frontend (this folder)
-    ├── src/
-    │   ├── api/
-    │   │   ├── client.js             # Axios + JWT interceptor
-    │   │   ├── auth.js               # Auth API calls
-    │   │   ├── driver.js             # Driver API calls
-    │   │   ├── rider.js              # Rider API calls
-    │   │   └── status.js             # Status / heartbeat API calls
-    │   ├── context/
-    │   │   └── AuthContext.jsx       # Global auth state + role detection + heartbeat
-    │   ├── components/common/
-    │   │   ├── AppLayout.jsx
-    │   │   ├── Sidebar.jsx
-    │   │   ├── DelhiMap.jsx
-    │   │   └── ProtectedRoute.jsx
-    │   ├── pages/
-    │   │   ├── auth/                 # Login, Register, ForgotPassword
-    │   │   ├── driver/               # Dashboard, Location, AI Suggest
-    │   │   ├── rider/                # Dashboard, Request Ride
-    │   │   └── admin/                # Admin overview
-    │   ├── utils/constants.js        # All backend enums + zone coordinates
-    │   ├── styles/global.css         # Full CSS design system
-    │   ├── App.jsx                   # Routes
-    │   └── main.jsx
-    ├── .env.example                  ← ✅ commit this
-    ├── .env                          ← ❌ NEVER commit — in .gitignore
-    ├── .gitignore
-    ├── package.json
-    └── vite.config.js
-```
 
 ### Key Architecture Decisions
 
@@ -373,7 +329,7 @@ The following quantifiable improvements were made over the baseline implementati
 
 ## 🔧 Environment Variables
 
-### Frontend (`frontend/.env`)
+
 
 ```env
 VITE_API_BASE_URL=http://localhost:8000
@@ -391,8 +347,7 @@ EMAIL_USER=your_email
 EMAIL_PASSWORD=your_email_password
 ```
 
-> ⚠️ Both `.env` files are listed in their respective `.gitignore` files.  
-> Only `.env.example` files are committed to the repository.
+
 
 ---
 
@@ -415,13 +370,7 @@ EMAIL_PASSWORD=your_email_password
 4. Push to the branch: `git push origin feature/your-feature`
 5. Open a Pull Request
 
----
 
-## 📄 License
-
-This project is licensed under the **MIT License**. See the [LICENSE](LICENSE) file for details.
-
----
 
 ## 🙏 Acknowledgements
 
@@ -435,6 +384,4 @@ This project is licensed under the **MIT License**. See the [LICENSE](LICENSE) f
 
 ---
 
-<div align="center">
-  <sub>Built for Delhi NCR mobility intelligence · MoveIQ © 2025</sub>
-</div>
+
