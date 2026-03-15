@@ -337,10 +337,13 @@ VITE_API_BASE_URL=http://localhost:8000
 # Example — fill in your actual values, never commit this file
 DATABASE_URL=your_database_url
 SECRET_KEY=your_jwt_secret_key
-EMAIL_HOST=your_smtp_host
-EMAIL_PORT=587
-EMAIL_USER=your_email
-EMAIL_PASSWORD=your_email_password  
+REDIS_HOST=your reddis host
+REDIS_PASSWORD=your reddis password
+SMTP_PORT=587
+SMTP_USERNAME =your smtp mail
+SMTP_PASSWORD=your smtp app password
+
+ 
 ```
 
 
