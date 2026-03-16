@@ -16,7 +16,8 @@ origins = [
     "http://localhost:3000",   # React default
     "http://localhost:5173",   # Vite default
     "http://127.0.0.1:3000",
-    "http://127.0.0.1:5173"
+    "http://127.0.0.1:5173",
+    "https://thankful-stone-0e2896000.4.azurestaticapps.net/"
 ]
 
 app.add_middleware(
