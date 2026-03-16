@@ -17,7 +17,8 @@ origins = [
     "http://localhost:5173",   # Vite default
     "http://127.0.0.1:3000",
     "http://127.0.0.1:5173",
-    "https://thankful-stone-0e2896000.4.azurestaticapps.net/"
+    "https://thankful-stone-0e2896000.4.azurestaticapps.net"
+    "https://mobility-hmfwdedfc8g2g7b3.centralindia-01.azurewebsites.net"  # replace with you webservice url or local host if you run locally
 ]
 
 app.add_middleware(
