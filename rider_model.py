@@ -3,7 +3,7 @@
 import joblib
 import pandas as pd
 
-model = joblib.load("driver_eta_model.pkl")
+model = joblib.load("driver_model.pkl")
 
 
 def predict_eta(data: dict):
