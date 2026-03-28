@@ -16,4 +16,4 @@ def predict_eta(data: dict):
 
     eta_minutes = (distance / speed) * 60
 
-    return eta_minutes
+    return float(eta_minutes)
