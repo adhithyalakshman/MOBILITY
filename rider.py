@@ -29,7 +29,7 @@ async def get_captain(
     drivers = await redis_client.zrange("drivers:online", 0, -1)
 
     if not drivers:
-        return {"message": "No drivers online"}
+        return {"message": "No drivers online online updation issue"}
 
     pipe = redis_client.pipeline()
 
