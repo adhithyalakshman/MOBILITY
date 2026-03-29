@@ -64,9 +64,9 @@ async def get_captain(
         eta = predict_eta(model_input)
 
         driver_rank_list.append({
-            "email": list(email),
+            "email": email,
             "area": driver_area,
-            "eta_minutes": round(eta, 2)
+            "eta_minutes": float(round(eta, 2))
         })
 
     if not driver_rank_list:
