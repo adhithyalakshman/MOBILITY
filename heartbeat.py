@@ -1,7 +1,7 @@
 from redis_client import redis_client
 
-HEARTBEAT_INTERVAL = 15        # seconds (frontend sends every 15 sec)
-TTL_SECONDS = 30               # expiration time
+HEARTBEAT_INTERVAL = 60       # seconds (frontend sends every 60 sec)
+TTL_SECONDS = 120             # expiration time
 
 def get_user_key(user_id: str) -> str:
     return f"user:online:{user_id}"
