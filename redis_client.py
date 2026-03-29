@@ -60,7 +60,7 @@ async def is_email_verified_status(email: str) -> bool:
     return status == "true"
 
 #   heart beat user online chack status
-HEARTBEAT_TTL = 30  # seconds
+HEARTBEAT_TTL = 120  # seconds
 
 
 async def update_user_heartbeat(email: str, role: str):
@@ -96,7 +96,7 @@ async def get_online_users_by_role(role: str) -> list[str]:
 
     return active_users
 
-ONLINE_TIMEOUT = 30  # seconds
+ONLINE_TIMEOUT = 120  # seconds
 
 async def set_driver_location(email: str, area: str):
     key = f"driver:{email}"
