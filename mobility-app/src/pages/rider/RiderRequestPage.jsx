@@ -6,7 +6,6 @@ import AppLayout from '../../components/common/AppLayout';
 import { Zap, Car, Info, MapPin } from 'lucide-react';
 import toast from 'react-hot-toast';
 
-// Auto-detect current time of day
 function detectTimeOfDay() {
   const h = new Date().getHours();
   if (h >= 7 && h < 10) return 'Morning Peak';
@@ -30,6 +29,11 @@ const DEFAULT_FORM = {
   day_of_week: detectDayOfWeek(),
 };
 
+const getWeatherEmoji = w => ({ Clear: '☀️', Rain: '🌧️', Fog: '🌫️', Heatwave: '🔥' }[w] || '');
+const getTrafficEmoji = t => ({ Low: '🟢', Medium: '🟡', High: '🟠', 'Very High': '🔴' }[t] || '');
+const getRoadEmoji = r => ({ 'Main Road': '🛣️', 'Inner Road': '🏘️', Highway: '🛤️' }[r] || '');
+const getTimeEmoji = t => ({ Night: '🌙', 'Morning Peak': '🌅', Afternoon: '☀️', 'Evening Peak': '🌆' }[t] || '');
+
 export default function RiderRequestPage() {
   const [form, setForm] = useState(DEFAULT_FORM);
   const [result, setResult] = useState(null);
@@ -42,7 +46,9 @@ export default function RiderRequestPage() {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault(); setError(''); setResult(null);
+    e.preventDefault();
+    setError('');
+    setResult(null);
     if (!form.rider_area) { setError('Please select your pickup area.'); return; }
     if (!form.end_area) { setError('Please select your destination area.'); return; }
     if (form.rider_area === form.end_area) { setError('Pickup and destination cannot be the same area.'); return; }
@@ -51,14 +57,22 @@ export default function RiderRequestPage() {
     try {
       const { data } = await getCaptain(form);
       setResult(data);
-      toast.success('Driver model analyzed succesfully!');
+      toast.success('Driver model analyzed successfully!');
     } catch (err) {
       const msg = err.response?.data?.detail;
       setError(typeof msg === 'string' ? msg : 'Could not find a driver. Please try again.');
-    } finally { setLoading(false); }
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const handleReset = () => { setForm(DEFAULT_FORM); setResult(null); setError(''); };
+  const handleReset = () => {
+    setForm(DEFAULT_FORM);
+    setResult(null);
+    setError('');
+  };
+
+  const hasDrivers = result?.ranked_drivers?.length > 0;
 
   return (
     <AppLayout>
@@ -74,7 +88,7 @@ export default function RiderRequestPage() {
       <div className="page-content">
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1.3fr', gap: '1.5rem', alignItems: 'start' }}>
 
-          {/* Form */}
+          {/* ── Left: Form ── */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
             <div className="alert alert-info" style={{ marginBottom: 0 }}>
               <Info size={16} style={{ flexShrink: 0, marginTop: 2 }} />
@@ -84,6 +98,7 @@ export default function RiderRequestPage() {
             </div>
 
             <form onSubmit={handleSubmit} className="card" style={{ padding: '1.5rem' }}>
+
               {/* Route */}
               <div style={{ marginBottom: '1rem' }}>
                 <h3 style={{ fontSize: '0.9rem', fontFamily: 'var(--font)', marginBottom: '0.85rem', color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
@@ -108,7 +123,8 @@ export default function RiderRequestPage() {
 
                 <div className="form-group">
                   <label className="form-label">Estimated Distance (km)</label>
-                  <input type="number" name="distance_km" className="form-control"
+                  <input
+                    type="number" name="distance_km" className="form-control"
                     min={0.5} max={200} step={0.5}
                     value={form.distance_km} onChange={handleChange} placeholder="e.g. 8"
                   />
@@ -120,7 +136,6 @@ export default function RiderRequestPage() {
                 <h3 style={{ fontSize: '0.9rem', fontFamily: 'var(--font)', marginBottom: '0.85rem', color: 'var(--text-secondary)' }}>
                   🌡️ Conditions
                 </h3>
-
                 <div className="form-row">
                   <div className="form-group">
                     <label className="form-label">Weather</label>
@@ -140,14 +155,18 @@ export default function RiderRequestPage() {
                   <label className="form-label">Road Type</label>
                   <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '0.5rem' }}>
                     {ROAD_TYPES.map(r => (
-                      <button key={r} type="button" onClick={() => setForm(p => ({ ...p, road_type: r }))} style={{
-                        padding: '0.6rem 0.4rem', borderRadius: 'var(--r-sm)',
-                        border: `1px solid ${form.road_type === r ? 'rgba(0,212,255,0.4)' : 'var(--border-light)'}`,
-                        background: form.road_type === r ? 'rgba(0,212,255,0.08)' : 'transparent',
-                        color: form.road_type === r ? 'var(--brand)' : 'var(--text-secondary)',
-                        fontSize: '0.75rem', fontWeight: form.road_type === r ? 600 : 400,
-                        cursor: 'pointer', fontFamily: 'var(--font)', transition: 'all var(--transition)',
-                      }}>
+                      <button
+                        key={r} type="button"
+                        onClick={() => setForm(p => ({ ...p, road_type: r }))}
+                        style={{
+                          padding: '0.6rem 0.4rem', borderRadius: 'var(--r-sm)',
+                          border: `1px solid ${form.road_type === r ? 'rgba(0,212,255,0.4)' : 'var(--border-light)'}`,
+                          background: form.road_type === r ? 'rgba(0,212,255,0.08)' : 'transparent',
+                          color: form.road_type === r ? 'var(--brand)' : 'var(--text-secondary)',
+                          fontSize: '0.75rem', fontWeight: form.road_type === r ? 600 : 400,
+                          cursor: 'pointer', fontFamily: 'var(--font)', transition: 'all var(--transition)',
+                        }}
+                      >
                         {getRoadEmoji(r)}<br />{r}
                       </button>
                     ))}
@@ -176,7 +195,9 @@ export default function RiderRequestPage() {
                 </div>
               </div>
 
-              {error && <div className="alert alert-error"><span>⚠</span>{error}</div>}
+              {error && (
+                <div className="alert alert-error"><span>⚠</span>{error}</div>
+              )}
 
               <div style={{ display: 'flex', gap: '0.75rem' }}>
                 <button type="submit" className="btn btn-primary" style={{ flex: 1 }} disabled={loading}>
@@ -194,106 +215,126 @@ export default function RiderRequestPage() {
             </form>
           </div>
 
-          {/* Right: Result + Map */}
+          {/* ── Right: Result + Map ── */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
 
-            {result && (() => {
-              const entries = Object.entries(result);
-              const hasData = entries.length > 0;
-              // Try to detect a "no driver" signal from the model output
-              const rawText = JSON.stringify(result).toLowerCase();
-              const noDriver =
-                !hasData ||
-                rawText.includes('no driver') ||
-                rawText.includes('not available') ||
-                rawText.includes('unavailable') ||
-                rawText.includes('no captain') ||
-                rawText.includes('0 driver');
+            {/* Result card */}
+            {result && (
+              <div className="result-card" style={{
+                borderColor: hasDrivers ? 'var(--success-border)' : 'var(--warning-border)',
+                background: hasDrivers ? 'var(--success-light)' : 'var(--warning-light)',
+              }}>
 
-              return (
-                <div className="result-card" style={{
-                  borderColor: noDriver ? 'var(--warning-border)' : 'var(--success-border)',
-                  background: noDriver ? 'var(--warning-light)' : 'var(--success-light)',
-                }}>
-                  {/* Header — driven entirely by model output */}
-                  <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.75rem', marginBottom: '1.25rem' }}>
-                    <div style={{
-                      width: 44, height: 44, borderRadius: 'var(--r-md)', flexShrink: 0,
-                      background: noDriver ? 'rgba(217,119,6,0.12)' : 'rgba(5,150,105,0.1)',
-                      display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    }}>
-                      <Car size={22} color={noDriver ? 'var(--warning)' : 'var(--success)'} />
-                    </div>
-                    <div style={{ flex: 1 }}>
-                      <div style={{
-                        fontSize: 11, fontWeight: 600, textTransform: 'uppercase',
-                        letterSpacing: '0.07em', color: noDriver ? 'var(--warning)' : 'var(--success)',
-                        marginBottom: 3,
-                      }}>
-                        Model Response
-                      </div>
-                      <div style={{ fontSize: 15, fontWeight: 600, color: 'var(--text-primary)', lineHeight: 1.35 }}>
-                        {hasData
-                          ? /* Use the first string value from the response as the headline */
-                            String(Object.values(result)[0])
-                          : 'No response data returned'}
-                      </div>
-                    </div>
-                    <span className={`badge ${noDriver ? 'badge-warning' : 'badge-online'}`} style={{ flexShrink: 0 }}>
-                      {noDriver ? '⚠ No match' : <><span className="pulse-dot" /> Matched</>}
-                    </span>
+                {/* Header */}
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1.25rem' }}>
+                  <div style={{
+                    width: 44, height: 44, borderRadius: 'var(--r-md)', flexShrink: 0,
+                    background: hasDrivers ? 'rgba(5,150,105,0.1)' : 'rgba(217,119,6,0.12)',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  }}>
+                    <Car size={22} color={hasDrivers ? 'var(--success)' : 'var(--warning)'} />
                   </div>
-
-                  {/* All model output fields */}
-                  {hasData && (
+                  <div style={{ flex: 1 }}>
                     <div style={{
-                      background: '#fff',
-                      border: '1px solid var(--border-light)',
-                      borderRadius: 'var(--r-md)',
-                      overflow: 'hidden',
-                      marginBottom: '1rem',
+                      fontSize: 11, fontWeight: 600, textTransform: 'uppercase',
+                      letterSpacing: '0.07em',
+                      color: hasDrivers ? 'var(--success)' : 'var(--warning)',
+                      marginBottom: 3,
                     }}>
-                      <div style={{
-                        padding: '8px 14px',
-                        borderBottom: '1px solid var(--border-light)',
-                        fontSize: 11, fontWeight: 600, textTransform: 'uppercase',
-                        letterSpacing: '0.07em', color: 'var(--text-muted)',
-                      }}>
-                        Full Model Output
-                      </div>
-                      {entries.map(([key, val], i) => (
-                        <div key={key} style={{
-                          display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-                          padding: '9px 14px',
-                          borderBottom: i < entries.length - 1 ? '1px solid var(--border-light)' : 'none',
-                          gap: '1rem',
-                        }}>
-                          <span style={{ fontSize: 12.5, color: 'var(--text-secondary)', textTransform: 'capitalize', fontWeight: 500 }}>
-                            {key.replace(/_/g, ' ')}
-                          </span>
-                          <span style={{ fontSize: 13, color: 'var(--text-primary)', fontWeight: 600, textAlign: 'right' }}>
-                            {String(val)}
-                          </span>
-                        </div>
-                      ))}
+                      Model Response
                     </div>
-                  )}
+                    <div style={{ fontSize: 15, fontWeight: 600, color: 'var(--text-primary)', lineHeight: 1.35 }}>
+                      {hasDrivers
+                        ? `${result.count} driver${result.count > 1 ? 's' : ''} found near you`
+                        : result.message || 'No drivers available right now'}
+                    </div>
+                  </div>
+                  <span
+                    className={`badge ${hasDrivers ? 'badge-online' : 'badge-warning'}`}
+                    style={{ flexShrink: 0 }}
+                  >
+                    {hasDrivers ? <><span className="pulse-dot" /> Matched</> : '⚠ No match'}
+                  </span>
+                </div>
 
-                  {/* Route summary */}
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.6rem' }}>
-                    <div style={{ background: '#fff', border: '1px solid var(--border-light)', borderRadius: 'var(--r-sm)', padding: '10px 12px' }}>
-                      <div style={{ fontSize: 10.5, color: 'var(--text-muted)', marginBottom: 3, fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em' }}>From</div>
-                      <div style={{ fontSize: 13, fontWeight: 600 }}>{form.rider_area}</div>
+                {/* ✅ Driver table — correctly maps over ranked_drivers array */}
+                {hasDrivers && (
+                  <div style={{
+                    background: '#fff',
+                    border: '1px solid var(--border-light)',
+                    borderRadius: 'var(--r-md)',
+                    overflow: 'hidden',
+                    marginBottom: '1rem',
+                  }}>
+                    {/* Table header */}
+                    <div style={{
+                      display: 'grid',
+                      gridTemplateColumns: '2fr 1fr 1fr',
+                      padding: '8px 14px',
+                      borderBottom: '1px solid var(--border-light)',
+                      fontSize: 11, fontWeight: 600,
+                      textTransform: 'uppercase',
+                      letterSpacing: '0.07em',
+                      color: 'var(--text-muted)',
+                    }}>
+                      <span>Driver Email</span>
+                      <span>Area</span>
+                      <span>ETA</span>
                     </div>
-                    <div style={{ background: '#fff', border: '1px solid var(--border-light)', borderRadius: 'var(--r-sm)', padding: '10px 12px' }}>
-                      <div style={{ fontSize: 10.5, color: 'var(--text-muted)', marginBottom: 3, fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em' }}>To</div>
-                      <div style={{ fontSize: 13, fontWeight: 600 }}>{form.end_area}</div>
-                    </div>
+
+                    {/* ✅ One row per driver */}
+                    {result.ranked_drivers.map((driver, i) => (
+                      <div
+                        key={i}
+                        style={{
+                          display: 'grid',
+                          gridTemplateColumns: '2fr 1fr 1fr',
+                          padding: '10px 14px',
+                          borderBottom: i < result.ranked_drivers.length - 1
+                            ? '1px solid var(--border-light)'
+                            : 'none',
+                          alignItems: 'center',
+                          background: i === 0 ? 'rgba(5,150,105,0.04)' : 'transparent',
+                        }}
+                      >
+                        <span style={{ fontSize: 13, color: 'var(--text-primary)', fontWeight: 500 }}>
+                          {i === 0 && (
+                            <span style={{
+                              fontSize: 10, fontWeight: 700, background: 'var(--success)',
+                              color: '#fff', borderRadius: 4, padding: '1px 5px',
+                              marginRight: 6, verticalAlign: 'middle',
+                            }}>
+                              BEST
+                            </span>
+                          )}
+                          {driver.email}
+                        </span>
+                        <span style={{ fontSize: 12.5, color: 'var(--text-secondary)' }}>
+                          {driver.area}
+                        </span>
+                        <span style={{ fontSize: 13, fontWeight: 600, color: 'var(--brand)' }}>
+                          {driver.eta_minutes} min
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                {/* Route summary */}
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.6rem' }}>
+                  <div style={{ background: '#fff', border: '1px solid var(--border-light)', borderRadius: 'var(--r-sm)', padding: '10px 12px' }}>
+                    <div style={{ fontSize: 10.5, color: 'var(--text-muted)', marginBottom: 3, fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em' }}>From</div>
+                    <div style={{ fontSize: 13, fontWeight: 600 }}>{form.rider_area}</div>
+                  </div>
+                  <div style={{ background: '#fff', border: '1px solid var(--border-light)', borderRadius: 'var(--r-sm)', padding: '10px 12px' }}>
+                    <div style={{ fontSize: 10.5, color: 'var(--text-muted)', marginBottom: 3, fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em' }}>To</div>
+                    <div style={{ fontSize: 13, fontWeight: 600 }}>{form.end_area}</div>
                   </div>
                 </div>
-              );
-            })()}
+              </div>
+            )}
 
+            {/* Empty state */}
             {!result && !loading && (
               <div className="card" style={{ textAlign: 'center', padding: '2rem', borderStyle: 'dashed' }}>
                 <Car size={36} color="var(--text-muted)" style={{ marginBottom: '0.75rem' }} />
@@ -327,6 +368,7 @@ export default function RiderRequestPage() {
                 </span>
               </div>
             </div>
+
           </div>
         </div>
       </div>
@@ -339,8 +381,3 @@ export default function RiderRequestPage() {
     </AppLayout>
   );
 }
-
-const getWeatherEmoji = w => ({ Clear: '☀️', Rain: '🌧️', Fog: '🌫️', Heatwave: '🔥' }[w] || '');
-const getTrafficEmoji = t => ({ Low: '🟢', Medium: '🟡', High: '🟠', 'Very High': '🔴' }[t] || '');
-const getRoadEmoji = r => ({ 'Main Road': '🛣️', 'Inner Road': '🏘️', Highway: '🛤️' }[r] || '');
-const getTimeEmoji = t => ({ Night: '🌙', 'Morning Peak': '🌅', Afternoon: '☀️', 'Evening Peak': '🌆' }[t] || '');
