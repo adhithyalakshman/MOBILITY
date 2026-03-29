@@ -1,6 +1,8 @@
 # MoveIQ — Mobility Intelligence Platform
+https://thankful-stone-0e2896000.4.azurestaticapps.net/
 
 <div align="center">
+
 
 [![React](https://img.shields.io/badge/React-18.2-61dafb?style=flat-square&logo=react)](https://reactjs.org/)
 [![Vite](https://img.shields.io/badge/Vite-5.x-646cff?style=flat-square&logo=vite)](https://vitejs.dev/)
